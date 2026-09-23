@@ -79,3 +79,20 @@ package-lock.json.backup
 *.tmp
 *.temp
 .cache/
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+
+# Variables de entorno y secretos
+.env
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Ajustes de SO y editores
+.DS_Store
+.vscode/*
+!.vscode/settings.json
