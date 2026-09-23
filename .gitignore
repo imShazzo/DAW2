@@ -1,0 +1,81 @@
+# ==========================================
+# 1. Docker y Bases de Datos Locales
+# ==========================================
+# Volúmenes de MariaDB/MySQL (evita subir gigas de datos binarios y bloqueos de permisos)
+**/db_data/
+**/mysql_data/
+**/mariadb_data/
+
+# Archivos de registro y dumps de bases de datos
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+
+# ==========================================
+# 2. Entornos y Credenciales Sensibles
+# ==========================================
+# Variables de entorno con contraseñas o claves privadas
+.env
+.env.local
+.env.*.local
+*.env
+
+# Certificados y claves locales
+*.pem
+*.key
+*.cert
+
+# ==========================================
+# 3. Configuraciones de Editores e IDEs
+# ==========================================
+# Configuración local de VS Code (evita pisar extensiones o temas a otros)
+.vscode/
+!.vscode/settings.json.example
+
+# IDEs de JetBrains (PHPStorm, IntelliJ, etc.)
+.idea/
+
+# Editores de terminal
+*.swp
+*.swo
+*~
+
+# ==========================================
+# 4. Archivos Ocultos del Sistema Operativo
+# ==========================================
+# Linux / Arch / Ubuntu
+*~
+.directory
+.Trash-*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# 5. Dependencias y Paquetes de Terceros
+# ==========================================
+# PHP (Composer)
+**/vendor/
+composer.phar
+
+# JavaScript / TypeScript / Node (DWEC, DIW)
+**/node_modules/
+**/dist/
+**/build/
+.npm
+package-lock.json.backup
+
+# ==========================================
+# 6. Archivos Temporales y Caché
+# ==========================================
+*.tmp
+*.temp
+.cache/

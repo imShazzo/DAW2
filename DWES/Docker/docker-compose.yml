@@ -1,0 +1,43 @@
+services:
+  # 1. Servidor Web (Apache + PHP)
+  web:
+    build: .
+    container_name: lamp_web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+
+  # 2. Base de Datos (MariaDB)
+  db:
+    image: mariadb:11.4
+    container_name: lamp_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dwes_db
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # 3. Gestor Gráfico (phpMyAdmin - como en XAMPP)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: lamp_phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
+
+volumes:
+  db_data:
