@@ -1,0 +1,7 @@
+.multiplicar {
+    border-collapse: collapse;
+}
+
+.multiplicar td {
+    border: 1px solid black;
+}

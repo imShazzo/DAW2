@@ -1,32 +1,67 @@
 <?php
-// Configuración básica
-$ignorar = ['.', '..', 'index.php']; // Archivos/carpetas a ocultar
-$elementos = scandir(__DIR__);
+// Mostrar errores por si acaso
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Separamos en carpetas y archivos sueltos
+$directorioBase = __DIR__;
+$ignorar = ['.git', '.vscode', 'db_data', 'node_modules', 'vendor'];
+$extensionesValidas = ['php', 'html'];
+
 $carpetas = [];
 $archivosSueltos = [];
 
-foreach ($elementos as $item) {
-    if (in_array($item, $ignorar)) continue;
-    
-    $rutaCompleta = __DIR__ . '/' . $item;
-    
-    if (is_dir($rutaCompleta)) {
-        // Leemos los ficheros de la subcarpeta
-        $ficherosCarpeta = scandir($rutaCompleta);
-        $phpFiles = [];
-        foreach ($ficherosCarpeta as $f) {
-            if ($f === '.' || $f === '..') continue;
-            if (pathinfo($f, PATHINFO_EXTENSION) === 'php') {
-                $phpFiles[] = $f;
-            }
+// Iterador recursivo para entrar en cualquier nivel de subcarpetas
+$iterador = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($directorioBase, RecursiveDirectoryIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::SELF_FIRST
+);
+
+foreach ($iterador as $item) {
+    if ($item->isDir()) {
+        continue;
+    }
+
+    $rutaCompleta = $item->getPathname();
+    // Obtener ruta relativa quitando el directorio base
+    $rutaRelativa = ltrim(substr($rutaCompleta, strlen($directorioBase)), DIRECTORY_SEPARATOR);
+
+    // Comprobar carpetas ignoradas o index.php
+    $ignorarArchivo = false;
+    foreach ($ignorar as $ign) {
+        if (str_contains($rutaRelativa, $ign)) {
+            $ignorarArchivo = true;
+            break;
         }
-        $carpetas[$item] = $phpFiles;
-    } elseif (pathinfo($item, PATHINFO_EXTENSION) === 'php') {
-        $archivosSueltos[] = $item;
+    }
+    if ($ignorarArchivo || $item->getFilename() === 'index.php') {
+        continue;
+    }
+
+    // Filtrar por extensiones válidas
+    $ext = strtolower($item->getExtension());
+    if (!in_array($ext, $extensionesValidas)) {
+        continue;
+    }
+
+    // Separar directorio relativo y nombre del archivo
+    $dirRelativo = dirname($rutaRelativa);
+    $nombreArchivo = $item->getFilename();
+
+    if ($dirRelativo === '.') {
+        $archivosSueltos[] = [
+            'nombre' => $nombreArchivo,
+            'ruta'   => $rutaRelativa
+        ];
+    } else {
+        $carpetas[$dirRelativo][] = [
+            'nombre' => $nombreArchivo,
+            'ruta'   => $rutaRelativa
+        ];
     }
 }
+
+// Ordenar carpetas alfabéticamente
+ksort($carpetas);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -121,11 +156,6 @@ foreach ($elementos as $item) {
             color: #fff;
             transform: translateX(4px);
         }
-        .empty {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
@@ -144,35 +174,31 @@ foreach ($elementos as $item) {
     </header>
 
     <main class="grid">
-        <!-- Carpetas detectadas dinámicamente (Clase, IA, etc.) -->
+        <!-- Carpetas y subcarpetas -->
         <?php foreach ($carpetas as $carpeta => $archivos): ?>
             <div class="card">
                 <h2>📁 <?= htmlspecialchars($carpeta) ?></h2>
-                <?php if (empty($archivos)): ?>
-                    <p class="empty">Carpeta vacía (sin .php)</p>
-                <?php else: ?>
-                    <ul>
-                        <?php foreach ($archivos as $archivo): ?>
-                            <li>
-                                <a href="<?= rawurlencode($carpeta) ?>/<?= rawurlencode($archivo) ?>">
-                                    📄 <?= htmlspecialchars($archivo) ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
+                <ul>
+                    <?php foreach ($archivos as $item): ?>
+                        <li>
+                            <a href="<?= htmlspecialchars(implode('/', array_map('rawurlencode', explode('/', $item['ruta'])))) ?>">
+                                📄 <?= htmlspecialchars($item['nombre']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
         <?php endforeach; ?>
 
-        <!-- Archivos sueltos en la raíz de src (como db_test.php) -->
+        <!-- Archivos en la raíz -->
         <?php if (!empty($archivosSueltos)): ?>
             <div class="card">
                 <h2>🛠️ Raíz (src)</h2>
                 <ul>
-                    <?php foreach ($archivosSueltos as $archivo): ?>
+                    <?php foreach ($archivosSueltos as $item): ?>
                         <li>
-                            <a href="<?= rawurlencode($archivo) ?>">
-                                ⚙️ <?= htmlspecialchars($archivo) ?>
+                            <a href="<?= rawurlencode($item['ruta']) ?>">
+                                ⚙️ <?= htmlspecialchars($item['nombre']) ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
