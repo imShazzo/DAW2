@@ -41,7 +41,7 @@
     foreach ($nombres as $nombre) {
         echo "<li>" . $nombre . "</li>";
     }
-    echo "</ol>"
+    echo "</ol>";
     ?>
 
     <?php 
@@ -86,10 +86,15 @@
 
     echo "<h1>Listado de alumnos</h1>";
     echo "<ol>";
-    foreach ($nombres as $nombre) {
-        echo "<li>" . $nombre . "</li>";
+    foreach ($nombresporfilas as $fila => $nombres) {
+        echo "<li>" . $fila . "</li>";
+        echo "<ul>";
+        foreach ($nombres as $nombre) {
+            echo "<li>" . $nombre . "</li>";
+        }
+        echo "</ul>";
     }
-    echo "</ol>"
+    echo "</ol>";
     ?>
 </body>
 </html>
