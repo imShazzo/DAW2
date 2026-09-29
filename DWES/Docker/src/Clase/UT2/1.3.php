@@ -15,7 +15,7 @@
         // Definición de variables iniciales:
         // $numero: almacena la base de la tabla de multiplicar a calcular.
         // $indice: actúa como contador/multiplicador inicial para el bucle.
-        $numero = 5;
+        $numero = 107;
         $indice = 1;
 
         // -------------------------------------------------------------
@@ -44,7 +44,7 @@
         // -------------------------------------------------------------
 
         // Encabezado y apertura de la segunda lista HTML
-        echo "<h1>Tabla de multiplicar del " . $numero . " (usando while)</h1><ul>";
+        echo "<h1>Tabla de multiplicar del " . $numero . " (usando for)</h1><ul>";
 
         // Bucle 'for': unifica en una sola línea la inicialización, la condición y el paso:
         // 1. $indice = 1;         -> Reinicia el contador a 1 (ya que el while anterior lo dejó en 11).
