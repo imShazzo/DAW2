@@ -23,7 +23,7 @@
             echo "<hr>";
             $indice2 = 0;
             $indice++;
-        };
+        }
     ?>
 </body>
 </html>

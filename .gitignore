@@ -96,3 +96,6 @@ __pycache__/
 .DS_Store
 .vscode/*
 !.vscode/settings.json
+
+
+daw2-fiag/
